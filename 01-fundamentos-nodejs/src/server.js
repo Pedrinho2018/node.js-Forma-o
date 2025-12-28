@@ -1,15 +1,28 @@
-import http from 'node:http'
+import http from 'node:http';
 
-//criar um usuario(nome,email,senha)
+const users = []
 
-const server = http.createServer((req, res) => {
-    const method = req.method
-    const url = req.url
 
-    console.log(method, url)
+const server = http.createServer((request, response) => {  
+    const{ method, url } = request;
 
-    return res.end('Hello ignite!')
+    if (method === 'GET' && url === '/users') {
+        return response
+        .setHeader('Content-Type', 'application/json')
 
-})
+        .end(JSON.stringify(users));
+    }
 
-server.listen(3333)
+    if (method === 'POST' && url === '/users') {
+        users.push({
+            id:1,
+            name: 'Pedro',
+            email: 'pedro@123.com.br'
+        });
+
+        return response.writeHead(201).end();
+    }
+
+    return response.writeHead(404).end();
+});
+server.listen(3333, () => console.log('Server is running on http://localhost:3333'));
